@@ -11,6 +11,7 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
+import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.command.spec.CommandSpec;
@@ -55,18 +56,23 @@ public abstract class Command implements CommandExecutor {
 
     }
 
-    public String getMainAlias() {
+    public final String getMainAlias() {
         return aliases.get(0);
     }
 
     public CommandSpec getCommandSpec() {
         getSubCommands().forEach(command -> spec.spec.child(command.getCommandSpec(), command.aliases));
         spec.spec.executor(this);
+        spec.spec.arguments(getArgs().toArray(new CommandElement[0]));
         return spec.spec.build();
     }
 
+    public List<CommandElement> getArgs() {
+        return new ArrayList<>();
+    }
+
     @Override
-    public @NotNull CommandResult execute(@NotNull CommandSource src, @NotNull CommandContext args) {
+    public final @NotNull CommandResult execute(@NotNull CommandSource src, @NotNull CommandContext args) {
         if (spec.onlyForConsole) {
             if (!(src instanceof ConsoleSource)) {
                 src.sendMessage(Text.of(main.getLang().onlyForConsole.parse()));
@@ -119,7 +125,8 @@ public abstract class Command implements CommandExecutor {
         return output;
     }
 
-    public List<Command> getSubCommands() {
+
+    private List<Command> getSubCommands() {
         List<Command> subCommands = new ArrayList<>();
 
         new Reflections(main.getCommandManager().packageName).getTypesAnnotatedWith(dev.lightdream.commandmanager.annotation.Command.class).forEach(aClass -> {
@@ -157,7 +164,7 @@ public abstract class Command implements CommandExecutor {
         return subCommands;
     }
 
-    public @Nullable Command getSubCommand(String name) {
+    public final @Nullable Command getSubCommand(String name) {
         for (Command command : getSubCommands()) {
             if (command.aliases.contains(name)) {
                 return command;
