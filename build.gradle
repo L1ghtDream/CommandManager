@@ -1,0 +1,117 @@
+buildscript {
+    repositories {
+        maven {
+            url = "https://plugins.gradle.org/m2/"
+        }
+        maven {
+            url = "https://repo.lightdream.dev/repository/LightDream-API/"
+        }
+    }
+    dependencies {
+        classpath "gradle.plugin.org.spongepowered:spongegradle:0.8.1"
+        classpath 'com.github.jengelman.gradle.plugins:shadow:4.0.4'
+    }
+}
+
+plugins {
+    id "com.github.johnrengelman.shadow" version "6.1.0"
+}
+
+apply plugin: "org.spongepowered.plugin"
+apply plugin: 'maven-publish'
+
+
+group = 'dev.lightdream'
+version = '1.0.0'
+
+
+repositories {
+    maven { url = 'https://jitpack.io' }
+    maven { url = "http://maven.shadowfacts.net/" }
+    maven { url = "http://maven.bluexin.be/repository/snapshots/" }
+    maven { url = "https://repo.lightdream.dev/repository/LightDream-API/" }
+}
+
+processResources {
+    inputs.property "version", project.version
+    inputs.property "mcversion", "1.12.2"
+
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+
+        expand 'version': project.version, 'mcversion': "1.12.2"
+    }
+
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+}
+
+dependencies {
+
+    // Sponge
+    compileOnly 'org.spongepowered:spongeapi:7.4.0'
+    annotationProcessor 'org.spongepowered:spongeapi:7.4.0'
+
+    // LightDream
+    compile "dev.lightdream:FileManager:2.0.11"
+    compile "dev.lightdream:DatabaseManager:3.7.0"
+    compile "dev.lightdream:MessageBuilder:2.1.10"
+    compile "dev.lightdream:Logger:2.3.2"
+
+    // Reflections
+    implementation 'org.reflections:reflections:0.10.2'
+
+}
+
+shadowJar {
+    dependencies {
+        include(dependency('dev.lightdream:DatabaseManager:.*'))
+        include(dependency('dev.lightdream:FileManager:.*'))
+        include(dependency('dev.lightdream:MessageBuilder:.*'))
+        include(dependency('dev.lightdream:Logger:.*'))
+    }
+    classifier ''
+}
+
+
+sponge.plugin.id = 'commandmanager-sponge'
+
+def targetJavaVersion = 8
+java {
+    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
+    sourceCompatibility = javaVersion
+    targetCompatibility = javaVersion
+    if (JavaVersion.current() < javaVersion) {
+        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
+        options.release = targetJavaVersion
+    }
+}
+
+processResources {
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
+            }
+        }
+
+        repositories {
+            maven {
+                url "https://repo.lightdream.dev/repository/LightDream-API/"
+                credentials{
+                    username = project.properties.username
+                    password = project.properties.password
+                }
+                authentication{
+                    basic(BasicAuthentication)
+                }
+            }
+        }
+    }
+}

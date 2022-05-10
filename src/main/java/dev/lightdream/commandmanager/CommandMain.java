@@ -7,13 +7,8 @@ public interface CommandMain {
 
     CommandLang getLang();
 
-    void loadConfigs();
-
-    String getProjectName();
-
-    String getProjectVersion();
-
     @SuppressWarnings("unused")
     CommandManager getCommandManager();
+
 
 }

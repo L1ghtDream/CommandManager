@@ -1,5 +1,0 @@
-name: Fly
-version: '${project.version}'
-main: dev.lightdream.commandmanager.Main
-authors: [ LightDream ]
-website: https://lightdream.dev

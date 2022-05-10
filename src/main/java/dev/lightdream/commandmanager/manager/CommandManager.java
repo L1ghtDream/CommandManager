@@ -1,7 +1,7 @@
 package dev.lightdream.commandmanager.manager;
 
 import dev.lightdream.commandmanager.CommandMain;
-import dev.lightdream.commandmanager.annotations.Command;
+import dev.lightdream.commandmanager.annotation.Command;
 import dev.lightdream.logger.Debugger;
 import dev.lightdream.logger.Logger;
 import org.reflections.Reflections;
@@ -13,12 +13,14 @@ import java.util.List;
 
 public class CommandManager {
 
-    public List<dev.lightdream.commandmanager.commands.Command> commands = new ArrayList<>();
+    public List<dev.lightdream.commandmanager.command.Command> commands = new ArrayList<>();
+    public String packageName;
 
     public CommandManager(CommandMain main, String packageName) {
+        this.packageName = packageName;
         new Reflections(packageName).getTypesAnnotatedWith(Command.class).forEach(aClass -> {
             try {
-                for (dev.lightdream.commandmanager.commands.Command command : commands) {
+                for (dev.lightdream.commandmanager.command.Command command : commands) {
                     if (command.getClass().getSimpleName().equals(aClass.getSimpleName())) {
                         return;
                     }
@@ -44,8 +46,8 @@ public class CommandManager {
                     Logger.error("Class " + aClass.getSimpleName() + " does not have a valid constructor");
                     return;
                 }
-                if (obj instanceof dev.lightdream.commandmanager.commands.Command) {
-                    commands.add((dev.lightdream.commandmanager.commands.Command) obj);
+                if (obj instanceof dev.lightdream.commandmanager.command.Command) {
+                    commands.add((dev.lightdream.commandmanager.command.Command) obj);
                 }
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
                 e.printStackTrace();

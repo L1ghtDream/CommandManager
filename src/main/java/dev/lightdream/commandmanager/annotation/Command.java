@@ -1,26 +1,19 @@
-package dev.lightdream.commandmanager.annotations;
+package dev.lightdream.commandmanager.annotation;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
-public @interface SubCommand {
+public @interface Command {
 
-    Class<?> parent();
+    Class<?> parent() default Void.class;
 
-    String command();
-
-    String[] aliases() default {};
+    String[] aliases();
 
     String permission() default "";
-
-    String usage() default "";
 
     boolean onlyForPlayers() default false;
 
     boolean onlyForConsole() default false;
-
-    int minimumArgs() default 0;
-
 
 }
