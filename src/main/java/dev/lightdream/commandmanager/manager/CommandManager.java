@@ -38,10 +38,11 @@ public class CommandManager {
                         Debugger.info("    - " + parameters);
                     }
                 }
-                if (aClass.getDeclaredConstructors()[0].getParameterCount() == 0) {
-                    obj = aClass.getDeclaredConstructors()[0].newInstance();
-                } else if (aClass.getDeclaredConstructors()[0].getParameterCount() == 1) {
-                    obj = aClass.getDeclaredConstructors()[0].newInstance(main);
+                Constructor<?> constructor = aClass.getDeclaredConstructors()[0];
+                if (constructor.getParameterCount() == 0) {
+                    obj = constructor.newInstance();
+                } else if (constructor.getParameterCount() == 1) {
+                    obj = constructor.newInstance(main);
                 } else {
                     Logger.error("Class " + aClass.getSimpleName() + " does not have a valid constructor");
                     return;
