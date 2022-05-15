@@ -129,7 +129,7 @@ public abstract class Command implements CommandExecutor {
     private List<Command> getSubCommands() {
         List<Command> subCommands = new ArrayList<>();
 
-        new Reflections(main.getCommandManager().packageName).getTypesAnnotatedWith(dev.lightdream.commandmanager.annotation.Command.class).forEach(aClass -> {
+        new Reflections(main.getPackageName()).getTypesAnnotatedWith(dev.lightdream.commandmanager.annotation.Command.class).forEach(aClass -> {
             if (aClass.getAnnotation(dev.lightdream.commandmanager.annotation.Command.class).parent().getSimpleName().equals(getClass().getSimpleName())) {
                 try {
                     Object obj;

@@ -14,11 +14,9 @@ import java.util.List;
 public class CommandManager {
 
     public List<dev.lightdream.commandmanager.command.Command> commands = new ArrayList<>();
-    public String packageName;
 
-    public CommandManager(CommandMain main, String packageName) {
-        this.packageName = packageName;
-        new Reflections(packageName).getTypesAnnotatedWith(Command.class).forEach(aClass -> {
+    public CommandManager(CommandMain main) {
+        new Reflections(main.getPackageName()).getTypesAnnotatedWith(Command.class).forEach(aClass -> {
             try {
                 for (dev.lightdream.commandmanager.command.Command command : commands) {
                     if (command.getClass().getSimpleName().equals(aClass.getSimpleName())) {

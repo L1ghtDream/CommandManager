@@ -10,5 +10,7 @@ public interface CommandMain {
     @SuppressWarnings("unused")
     CommandManager getCommandManager();
 
+    String getPackageName();
+
 
 }
