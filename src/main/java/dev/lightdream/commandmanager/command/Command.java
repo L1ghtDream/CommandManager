@@ -121,7 +121,12 @@ public abstract class Command implements CommandExecutor {
 
     private List<Text> getSubCommandsHelpMessage(CommandSource source) {
         List<Text> output = new ArrayList<>();
-        getSubCommands().forEach(command -> output.add(command.getCommandSpec().getUsage(source)));
+        getSubCommands().forEach(command -> output.add(
+                Text.of(
+                        "/" + command.aliases.get(0) + " " +
+                                command.getCommandSpec().getUsage(source)
+                )
+        ));
         return output;
     }
 

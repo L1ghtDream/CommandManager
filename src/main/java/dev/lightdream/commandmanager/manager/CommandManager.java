@@ -19,16 +19,16 @@ public class CommandManager {
         new Reflections(main.getPackageName()).getTypesAnnotatedWith(Command.class).forEach(aClass -> {
             try {
                 for (dev.lightdream.commandmanager.command.Command command : commands) {
-                    if (command.getClass().getSimpleName().equals(aClass.getSimpleName())) {
+                    if (command.getClass().getName().equals(aClass.getName())) {
                         return;
                     }
                 }
                 Object obj;
-                Debugger.info(aClass.getSimpleName() + " constructors: ");
+                Debugger.info(aClass.getName() + " constructors: ");
                 for (Constructor<?> constructor : aClass.getDeclaredConstructors()) {
                     StringBuilder parameters = new StringBuilder();
                     for (Class<?> parameter : constructor.getParameterTypes()) {
-                        parameters.append(parameter.getSimpleName()).append(" ");
+                        parameters.append(parameter.getName()).append(" ");
                     }
                     if (parameters.toString().equals("")) {
                         Debugger.info("    - zero argument");
@@ -42,7 +42,7 @@ public class CommandManager {
                 } else if (constructor.getParameterCount() == 1) {
                     obj = constructor.newInstance(main);
                 } else {
-                    Logger.error("Class " + aClass.getSimpleName() + " does not have a valid constructor");
+                    Logger.error("Class " + aClass.getName() + " does not have a valid constructor");
                     return;
                 }
                 if (obj instanceof dev.lightdream.commandmanager.command.Command) {
