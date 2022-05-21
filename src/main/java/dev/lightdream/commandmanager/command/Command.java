@@ -135,14 +135,14 @@ public abstract class Command implements CommandExecutor {
         List<Command> subCommands = new ArrayList<>();
 
         new Reflections(main.getPackageName()).getTypesAnnotatedWith(dev.lightdream.commandmanager.annotation.Command.class).forEach(aClass -> {
-            if (aClass.getAnnotation(dev.lightdream.commandmanager.annotation.Command.class).parent().getSimpleName().equals(getClass().getSimpleName())) {
+            if (aClass.getAnnotation(dev.lightdream.commandmanager.annotation.Command.class).parent().getName().equals(getClass().getName())) {
                 try {
                     Object obj;
-                    Debugger.info(aClass.getSimpleName() + " constructors: ");
+                    Debugger.info(aClass.getName() + " constructors: ");
                     for (Constructor<?> constructor : aClass.getDeclaredConstructors()) {
                         StringBuilder parameters = new StringBuilder();
                         for (Class<?> parameter : constructor.getParameterTypes()) {
-                            parameters.append(parameter.getSimpleName()).append(" ");
+                            parameters.append(parameter.getName()).append(" ");
                         }
                         if (parameters.toString().equals("")) {
                             Debugger.info("    - zero argument");
@@ -155,7 +155,7 @@ public abstract class Command implements CommandExecutor {
                     } else if (aClass.getDeclaredConstructors()[0].getParameterCount() == 1) {
                         obj = aClass.getDeclaredConstructors()[0].newInstance(main);
                     } else {
-                        Logger.error("Class " + aClass.getSimpleName() + " does not have a valid constructor");
+                        Logger.error("Class " + aClass.getName() + " does not have a valid constructor");
                         return;
                     }
 
