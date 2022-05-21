@@ -123,7 +123,7 @@ public abstract class Command implements CommandExecutor {
         List<Text> output = new ArrayList<>();
         getSubCommands().forEach(command -> output.add(
                 Text.of(
-                        "/" + command.aliases.get(0) + " " +
+                        "/" + this.aliases.get(0) + " " + command.aliases.get(0) + " " +
                                 command.getCommandSpec().getUsage(source).toPlain()
                 )
         ));
