@@ -6,7 +6,7 @@
 
     <groupId>dev.lightdream</groupId>
     <artifactId>CommandManager-Sponge</artifactId>
-    <version>1.2.6</version>
+    <version>1.2.7</version>
     <packaging>jar</packaging>
 
     <name>CommandManager-Sponge</name>
@@ -57,6 +57,11 @@
         <!-- Own repos -->
         <dependency>
             <groupId>dev.lightdream</groupId>
+            <artifactId>Lambda</artifactId>
+            <version>LATEST</version>
+        </dependency>
+        <dependency>
+            <groupId>dev.lightdream</groupId>
             <artifactId>MessageBuilder</artifactId>
             <version>LATEST</version>
         </dependency>
@@ -65,7 +70,6 @@
             <artifactId>Logger</artifactId>
             <version>LATEST</version>
         </dependency>
-
     </dependencies>
 
     <build>

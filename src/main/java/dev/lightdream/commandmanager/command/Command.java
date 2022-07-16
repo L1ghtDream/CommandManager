@@ -2,6 +2,8 @@ package dev.lightdream.commandmanager.command;
 
 import dev.lightdream.commandmanager.CommandMain;
 import dev.lightdream.commandmanager.dto.CommandSpecWrap;
+import dev.lightdream.lambda.LambdaExecutor;
+import dev.lightdream.lambda.ScheduleUtils;
 import dev.lightdream.logger.Debugger;
 import dev.lightdream.logger.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -29,6 +31,7 @@ public abstract class Command implements CommandExecutor {
     private final CommandMain main;
     public CommandSpecWrap spec;
     public List<String> aliases;
+    private boolean runAsync = false;
 
     public Command(CommandMain main) {
         this.main = main;
@@ -41,6 +44,8 @@ public abstract class Command implements CommandExecutor {
         }
 
         dev.lightdream.commandmanager.annotation.Command command = getClass().getAnnotation(dev.lightdream.commandmanager.annotation.Command.class);
+
+        runAsync = command.async();
 
         String permission = command.permission();
         if (!permission.equals("")) {
@@ -73,25 +78,32 @@ public abstract class Command implements CommandExecutor {
 
     @Override
     public final @NotNull CommandResult execute(@NotNull CommandSource src, @NotNull CommandContext args) {
-        if (spec.onlyForConsole) {
-            if (!(src instanceof ConsoleSource)) {
-                src.sendMessage(Text.of(main.getLang().onlyForConsole.parse()));
-                return CommandResult.success();
+        LambdaExecutor.NoReturnNoArgLambdaExecutor executor = () -> {
+            if (spec.onlyForConsole) {
+                if (!(src instanceof ConsoleSource)) {
+                    src.sendMessage(Text.of(main.getLang().onlyForConsole.parse()));
+                    return;
+                }
+                exec((ConsoleSource) src, args);
+                return;
             }
-            exec((ConsoleSource) src, args);
-            return CommandResult.success();
-        }
-        if (spec.onlyForPlayers) {
-            if (!(src instanceof Player)) {
-                src.sendMessage(Text.of(main.getLang().onlyForPlayers.parse()));
-                return CommandResult.success();
+            if (spec.onlyForPlayers) {
+                if (!(src instanceof Player)) {
+                    src.sendMessage(Text.of(main.getLang().onlyForPlayers.parse()));
+                    return;
+                }
+                Player player = (Player) src;
+                exec(player, args);
+                return;
             }
-            Player player = (Player) src;
-            exec(player, args);
-            return CommandResult.success();
+
+            exec(src, args);
+        };
+
+        if (runAsync) {
+            ScheduleUtils.runTaskAsync(executor);
         }
 
-        exec(src, args);
         return CommandResult.success();
     }
 

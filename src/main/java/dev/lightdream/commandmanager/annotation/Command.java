@@ -16,4 +16,9 @@ public @interface Command {
 
     boolean onlyForConsole() default false;
 
+    /**
+     * @return true if you want the command to NOT block the main thread while executing or false if you want the command to block the main thread while executing
+     */
+    boolean async() default false;
+
 }
