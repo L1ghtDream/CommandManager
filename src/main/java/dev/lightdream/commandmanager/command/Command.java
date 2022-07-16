@@ -102,6 +102,8 @@ public abstract class Command implements CommandExecutor {
 
         if (runAsync) {
             ScheduleUtils.runTaskAsync(executor);
+        } else {
+            executor.execute();
         }
 
         return CommandResult.success();
